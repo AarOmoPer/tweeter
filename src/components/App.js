@@ -1,5 +1,5 @@
 import React from 'react';
-import { getNewTweetAndTweeters } from '../data'
+import { getNewTweetAndTweeters, getUserTweets } from '../data'
 
 class App extends React.Component {
   state = {
@@ -13,6 +13,7 @@ class App extends React.Component {
     this.setState({
       ...getNewTweetAndTweeters()
     })
+    getUserTweets('@realDonaldTrump')
   }
 
   render() {
