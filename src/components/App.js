@@ -1,5 +1,8 @@
 import React from 'react';
-import { getNewTweetAndTweeters, getUserTweets } from '../data'
+import { getNewTweetAndTweeters } from '../data'
+
+import {getUserTweets} from '../controller'
+getUserTweets('@realDonaldTrump')
 
 class App extends React.Component {
   state = {
@@ -13,7 +16,7 @@ class App extends React.Component {
     this.setState({
       ...getNewTweetAndTweeters()
     })
-    getUserTweets('@realDonaldTrump')
+    // getUserTweets('@realDonaldTrump')
   }
 
   render() {
