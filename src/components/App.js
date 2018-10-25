@@ -16,33 +16,39 @@ class App extends React.Component {
   }
 
   render() {
-    const { streak, tweet, tweeters, restart, timerRemaining} = this.state;
+    const { streak, tweet, tweeters, restart, timerRemaining } = this.state;
     return (
       <section>
-        <h2 className='main-header'>Tweeter</h2>
+        <section className='jumbotron jumbotron-fluid'>
+          <section className='container'>
+            <h2 className='main-header'>Tweeter</h2>
+          </section>
+        </section>
         {!restart
-          ? <section>
-            <h3>Your streak: {streak}</h3>
-            <h3>Seconds left: {timerRemaining}</h3>
+          ? <section className='container'>
+            <p>Your streak: {streak}</p>
+            <p>Seconds left: {timerRemaining}</p>
 
             <p className='tweet-container' style={{ border: "1px solid black", padding: "10px" }}>{tweet.text}</p>
 
             <p className='helper-container'>Who tweeted it?</p>
 
-            <section className='tweeter-container'>
-              {
-                tweeters.map((tweeterData, ind) => {
-                  const tweeter = tweeterData.data[0]
-                  return (
-                    <button
-                      key={ind}
-                      onClick={e => this.handleAnswerSubmission(e, tweeter.screen_name)}
-                      className='tweeter-button'>
-                      {tweeter.name}
-                    </button>
-                  )
-                })
-              }
+            <section className='fixed-bottom'>
+              <section className='container tweeter-container'>
+                {
+                  tweeters.map((tweeterData, ind) => {
+                    const tweeter = tweeterData.data[0]
+                    return (
+                      <button
+                        key={ind}
+                        onClick={e => this.handleAnswerSubmission(e, tweeter.screen_name)}
+                        className='tweeter-button'>
+                        {tweeter.name}
+                      </button>
+                    )
+                  })
+                }
+              </section>
             </section>
           </section>
           : <section>
@@ -61,12 +67,12 @@ class App extends React.Component {
 
   resetTimer = () => {
     clearInterval(this.state.timer)
-    this.setState({timerRemaining: 10})
+    this.setState({ timerRemaining: 10 })
     const timer = this.state.timer
     timer()
   }
-  tick = () => this.setState({timer: this.state.timer - 1})
-  
+  tick = () => this.setState({ timer: this.state.timer - 1 })
+
   getNewTweet = () => fetch('https://tweeter-backend.herokuapp.com')
     .then(res => res.json())
     .then(res => this.setState({ ...res }))
@@ -76,7 +82,7 @@ class App extends React.Component {
 
   handleAnswerSubmission = (e, tweeterHandle) => {
     e.preventDefault()
-    const {streak, tweet} = this.state;
+    const { streak, tweet } = this.state;
     if (tweeterHandle === tweet.user.screen_name) {
       this.setState({ streak: streak + 1, tweet: {}, tweeters: [] })
       this.getNewTweet()
