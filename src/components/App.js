@@ -1,14 +1,13 @@
 import React from 'react';
 
-// getUserTweets('@realDonaldTrump')
-
 class App extends React.Component {
   state = {
     streak: 0,
     tweet: {},
     tweeters: [],
-    timerRemaining: 10,
-    restart: false
+    secondsRemaining: 10,
+    wrongAnswer: false,
+    outOfTime: false,
   }
 
   componentDidMount() {
@@ -16,7 +15,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { streak, tweet, tweeters, restart, timerRemaining } = this.state;
+    const { streak, tweet, tweeters, wrongAnswer, secondsRemaining, outOfTime } = this.state;
     return (
       <section>
         <section className='jumbotron jumbotron-fluid'>
@@ -24,10 +23,12 @@ class App extends React.Component {
             <h2 className='main-header'>Tweeter</h2>
           </section>
         </section>
-        {!restart
+        {(!wrongAnswer && !outOfTime)
           ? <section className='container'>
-            <p>Your streak: {streak}</p>
-            <p>Seconds left: {timerRemaining}</p>
+            <section className="">
+              <p className="">Your streak: {streak}</p>
+              <p className="">Seconds left: {secondsRemaining}</p>
+            </section>
 
             <p className='tweet-container' style={{ border: "1px solid black", padding: "10px" }}>{tweet.text}</p>
 
@@ -53,11 +54,12 @@ class App extends React.Component {
           </section>
           : <section>
             <h2>Whoops!</h2>
+            <p>{wrongAnswer ? 'Unfortunately, your answer was wrong.' : "I'm afraid you ran out of time."}</p>
             <p>The right answer was {tweet.user.name}</p>
             <p>See the tweet <a href={`http://www.twitter.com/*/status/${tweet.id_str}`}>here</a></p>
             <p>Your streak was {streak}</p>
             <button>Share on twitter</button>
-            <button onClick={this.resetStreak}>Restart</button>
+            <button onClick={this.restart}>Restart</button>
           </section>
         }
 
@@ -65,34 +67,44 @@ class App extends React.Component {
     );
   }
 
-  resetTimer = () => {
-    clearInterval(this.state.timer)
-    this.setState({ timerRemaining: 10 })
-    const timer = this.state.timer
-    timer()
+  startTimer = () => {
+    const _this = this
+    this.incrementer = setInterval(() => {
+      if (_this.state.secondsRemaining === 0) {
+        clearInterval(this.incrementer)
+        _this.setState({ outOfTime: true })
+      }
+      else _this.setState({ secondsRemaining: _this.state.secondsRemaining - 1 })
+    }, 1000)
   }
-  tick = () => this.setState({ timer: this.state.timer - 1 })
 
   getNewTweet = () => fetch('https://tweeter-backend.herokuapp.com')
     .then(res => res.json())
     .then(res => this.setState({ ...res }))
-    //Start timer
-    // .then(() )
+    .then(this.startTimer)
     .catch(console.log)
 
   handleAnswerSubmission = (e, tweeterHandle) => {
     e.preventDefault()
     const { streak, tweet } = this.state;
     if (tweeterHandle === tweet.user.screen_name) {
-      this.setState({ streak: streak + 1, tweet: {}, tweeters: [] })
+      clearInterval(this.incrementer)
+      this.setState({ streak: streak + 1, tweet: {}, tweeters: [], secondsRemaining: 10 })
       this.getNewTweet()
     } else {
-      this.setState({ restart: true })
+      this.setState({ wrongAnswer: true })
     }
   }
 
-  resetStreak = () => {
-    this.setState({ restart: false, streak: 0, tweet: {}, tweeters: [] })
+  restart = () => {
+    this.setState({
+      streak: 0,
+      tweet: {},
+      tweeters: [],
+      secondsRemaining: 10,
+      wrongAnswer: false,
+      outOfTime: false,
+    })
     this.getNewTweet()
   }
 
