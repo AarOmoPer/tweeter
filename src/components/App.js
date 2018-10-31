@@ -5,7 +5,7 @@ class App extends React.Component {
     streak: 0,
     tweet: {},
     tweeters: [],
-    secondsRemaining: 10,
+    secondsRemaining: 20,
     wrongAnswer: false,
     outOfTime: false,
   }
@@ -89,7 +89,7 @@ class App extends React.Component {
     const { streak, tweet } = this.state;
     if (tweeterHandle === tweet.user.screen_name) {
       clearInterval(this.incrementer)
-      this.setState({ streak: streak + 1, tweet: {}, tweeters: [], secondsRemaining: 10 })
+      this.setState({ streak: streak + 1, tweet: {}, tweeters: [], secondsRemaining: 20 })
       this.getNewTweet()
     } else {
       this.setState({ wrongAnswer: true })
@@ -97,11 +97,12 @@ class App extends React.Component {
   }
 
   restart = () => {
+    clearInterval(this.incrementer)
     this.setState({
       streak: 0,
       tweet: {},
       tweeters: [],
-      secondsRemaining: 10,
+      secondsRemaining: 20,
       wrongAnswer: false,
       outOfTime: false,
     })
