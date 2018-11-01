@@ -17,52 +17,59 @@ class App extends React.Component {
   render() {
     const { streak, tweet, tweeters, wrongAnswer, secondsRemaining, outOfTime } = this.state;
     return (
-      <section>
-        <section className='jumbotron jumbotron-fluid'>
-          <section className='container'>
-            <h2 className='main-header'>Tweeter</h2>
+      <section className='hero'>
+        <section className='hero-head section'>
+          <section className='has-text-centered'>
+            <h2 className='main-header title'>Tweeter</h2>
           </section>
         </section>
-        {(!wrongAnswer && !outOfTime)
-          ? <section className='container'>
-            <section className="">
-              <p className="">Your streak: {streak}</p>
-              <p className="">Seconds left: {secondsRemaining}</p>
-            </section>
+        <section className='hero-body'>
+          <section className='container'>
+            {(!wrongAnswer && !outOfTime)
+              ? <section className='container'>
+                <p className="subtitle">
+                  <span className="is-size-6">Streak: {streak}</span>
+                  <span className={`is-size-4 is-pulled-right ${secondsRemaining < 6 && 'has-text-danger'}`}>{secondsRemaining}</span>
+                </p>
 
-            <p className='tweet-container' style={{ border: "1px solid black", padding: "10px" }}>{tweet.text}</p>
+                <p className='tweet-container container'>
+                  <p className='box'>
+                    {tweet.text}
+                  </p>
+                </p>
+                <p className='subtitle'></p>
+                <p className='helper-container subtitle is-size-6 has-text-centered has-text-danger'>Who tweeted it?</p>
 
-            <p className='helper-container'>Who tweeted it?</p>
-
-            <section className='fixed-bottom'>
-              <section className='container tweeter-container'>
-                {
-                  tweeters.map((tweeterData, ind) => {
-                    const tweeter = tweeterData.data[0]
-                    return (
-                      <button
-                        key={ind}
-                        onClick={e => this.handleAnswerSubmission(e, tweeter.screen_name)}
-                        className='tweeter-button'>
-                        {tweeter.name}
-                      </button>
-                    )
-                  })
-                }
+                <section className=''>
+                  <section className='container tweeter-container'>
+                    {
+                      tweeters.map((tweeterData, ind) => {
+                        const tweeter = tweeterData.data[0]
+                        return (
+                          <button
+                            key={ind}
+                            onClick={e => this.handleAnswerSubmission(e, tweeter.screen_name)}
+                            className='tweeter-button is-capitalized'>
+                            {tweeter.name}
+                          </button>
+                        )
+                      })
+                    }
+                  </section>
+                </section>
               </section>
-            </section>
+              : <section>
+                <h2>Whoops!</h2>
+                <p>{wrongAnswer ? 'Unfortunately, your answer was wrong.' : "I'm afraid you ran out of time."}</p>
+                <p>The right answer was {tweet.user.name}</p>
+                <p>See the tweet <a href={`http://www.twitter.com/*/status/${tweet.id_str}`}>here</a></p>
+                <p>Your streak was {streak}</p>
+                <button>Share on twitter</button>
+                <button onClick={this.restart}>Restart</button>
+              </section>
+            }
           </section>
-          : <section>
-            <h2>Whoops!</h2>
-            <p>{wrongAnswer ? 'Unfortunately, your answer was wrong.' : "I'm afraid you ran out of time."}</p>
-            <p>The right answer was {tweet.user.name}</p>
-            <p>See the tweet <a href={`http://www.twitter.com/*/status/${tweet.id_str}`}>here</a></p>
-            <p>Your streak was {streak}</p>
-            <button>Share on twitter</button>
-            <button onClick={this.restart}>Restart</button>
-          </section>
-        }
-
+        </section>
       </section>
     );
   }

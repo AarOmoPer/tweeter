@@ -16,3 +16,8 @@
   justify-content: space-evenly;
   padding-bottom: 20px;
 }
+
+.hero-body{
+  margin-top: 0 !important;
+  padding-top: 0 !important
+}
